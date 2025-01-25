@@ -1,0 +1,9 @@
+{
+  "ignore": ["node_modules"],
+  "ignore-watch": ["node_modules"],
+  "watch": ["src"],
+  "ext": "ts,json",
+  "delay": "1000",
+  "respawn": true,
+  "transpileOnly": true
+} 
