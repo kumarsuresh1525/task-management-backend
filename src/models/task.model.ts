@@ -33,6 +33,22 @@ const taskSchema = new Schema({
   },
 }, {
   timestamps: true,
+  toJSON: {
+    transform(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v; // Remove Mongoose's version key
+      return ret;
+    },
+  },
+  toObject: {
+    transform(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v; // Remove Mongoose's version key
+      return ret;
+    },
+  },
 });
 
 taskSchema.methods.toClient = function() {

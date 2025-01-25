@@ -3,13 +3,12 @@ import jwt from 'jsonwebtoken';
 import { AppError } from './error.middleware';
 import { IUser } from '../models/user.model';
 import { UserRepository } from '../repositories/user.repository';
-import mongoose from 'mongoose';
 
 // Extend Express Request type to include user
 // declare global {
 //   namespace Express {
 //     interface Request {
-//       user?: IUser;  // IUser already includes _id from Document
+//       user: IUser;  // IUser already includes _id from Document
 //     }
 //   }
 // }

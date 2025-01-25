@@ -37,6 +37,22 @@ const userSchema = new Schema({
   resetPasswordExpires: Date
 }, {
   timestamps: true,
+  toJSON: {
+    transform(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v; // Remove Mongoose's version key
+      return ret;
+    },
+  },
+  toObject: {
+    transform(doc, ret) {
+      ret.id = ret._id;
+      delete ret._id;
+      delete ret.__v; // Remove Mongoose's version key
+      return ret;
+    },
+  },
 });
 
 userSchema.pre('save', async function(next) {
@@ -50,13 +66,6 @@ userSchema.pre('save', async function(next) {
 userSchema.methods.comparePassword = async function(candidatePassword: string): Promise<boolean> {
   if (!this.password) return false;
   return bcrypt.compare(candidatePassword, this.password);
-};
-
-userSchema.methods.toClient = function() {
-  const obj = this.toObject();
-  obj.id = obj._id;
-  delete obj._id;
-  return obj;
 };
 
 export default mongoose.model<IUser>('User', userSchema); 
