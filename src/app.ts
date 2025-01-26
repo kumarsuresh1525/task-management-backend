@@ -27,14 +27,33 @@ app.use('/api/tasks', taskRoutes);
 app.use(errorHandler);
 
 // Database connection
-mongoose
-  .connect(process.env.MONGODB_URI!, {
-    serverSelectionTimeoutMS: 5000,
-    socketTimeoutMS: 45000,
-    connectTimeoutMS: 10000,
-    maxPoolSize: 10
-  })
-  .then(() => console.log('Connected to MongoDB'))
-  .catch((err) => console.error('MongoDB connection error:', err));
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI!, {
+      serverSelectionTimeoutMS: 30000,  // Increased timeout
+      socketTimeoutMS: 45000,
+      connectTimeoutMS: 30000,  // Increased timeout
+      maxPoolSize: 50          // Increased pool size
+    });
+    console.log('Connected to MongoDB');
+  } catch (err) {
+    console.error('MongoDB connection error:', err);
+    // Retry connection
+    setTimeout(connectDB, 5000);
+  }
+};
+
+connectDB();
+
+// Handle MongoDB connection errors
+mongoose.connection.on('error', err => {
+  console.error('MongoDB connection error:', err);
+  setTimeout(connectDB, 5000);
+});
+
+mongoose.connection.on('disconnected', () => {
+  console.log('MongoDB disconnected. Attempting to reconnect...');
+  setTimeout(connectDB, 5000);
+});
 
 export default app; 
